@@ -1,0 +1,65 @@
+from collections import deque
+
+class Graph:
+    def __init__(self, num_nodes, edges, use_adj_list=True):
+        self.num_nodes = num_nodes
+        self.graph = self.build_graph(edges, use_adj_list)
+    
+    def build_graph(self, edges, use_adj_list):
+        if use_adj_list:
+            # Building adjacency list
+            graph = {i: [] for i in range(self.num_nodes)}
+            for u, v in edges:
+                graph[u].append(v)
+                graph[v].append(u)  # Assuming undirected graph
+        else:
+            # Building adjacency matrix
+            graph = [[0] * self.num_nodes for _ in range(self.num_nodes)]
+            for u, v in edges:
+                graph[u][v] = 1
+                graph[v][u] = 1  # Assuming undirected graph
+        return graph
+
+    def dfs_iterative(self, start):
+        visited = set()
+        stack = [start]
+        result = []
+
+        while stack:
+            node = stack.pop()
+            if node not in visited:
+                visited.add(node)
+                result.append(node)
+                # Add neighbors in reverse order for correct DFS order
+                if isinstance(self.graph, dict):
+                    stack.extend(reversed(self.graph[node]))
+                else:
+                    stack.extend(reversed([i for i in range(self.num_nodes) if self.graph[node][i] == 1]))
+        return result
+
+    def bfs_iterative(self, start):
+        visited = set()
+        queue = deque([start])
+        result = []
+
+        while queue:
+            node = queue.popleft()
+            if node not in visited:
+                visited.add(node)
+                result.append(node)
+                if isinstance(self.graph, dict):
+                    queue.extend(self.graph[node])
+                else:
+                    queue.extend([i for i in range(self.num_nodes) if self.graph[node][i] == 1])
+        return result
+
+# Example usage
+edges = [(0, 1), (0, 2), (1, 3), (2, 4)]
+num_nodes = 5
+use_adj_list = True  # Set to False for adjacency matrix
+
+g = Graph(num_nodes, edges, use_adj_list=use_adj_list)
+
+print("Graph structure:", g.graph)
+print("DFS Iterative:", g.dfs_iterative(0))
+print("BFS Iterative:", g.bfs_iterative(0))
