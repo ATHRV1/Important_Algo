@@ -7,13 +7,11 @@ class Graph:
     
     def build_graph(self, edges, use_adj_list):
         if use_adj_list:
-            # Building adjacency list
             graph = {i: [] for i in range(self.num_nodes)}
             for u, v in edges:
                 graph[u].append(v)
-                graph[v].append(u)  # Assuming undirected graph
+                graph[v].append(u)  
         else:
-            # Building adjacency matrix
             graph = [[0] * self.num_nodes for _ in range(self.num_nodes)]
             for u, v in edges:
                 graph[u][v] = 1
@@ -30,7 +28,6 @@ class Graph:
             if node not in visited:
                 visited.add(node)
                 result.append(node)
-                # Add neighbors in reverse order for correct DFS order
                 if isinstance(self.graph, dict):
                     stack.extend(reversed(self.graph[node]))
                 else:
